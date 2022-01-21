@@ -1,0 +1,134 @@
+# digraph prof {
+# 	ratio = fill;
+# 	node [style=filled color=lightgreen];
+    
+#     "INTRO" -> "Talk to Heybenstance" [color="0.649 0.701 0.701"];
+#     "GAME INTRO" -> "Pick up Anvil" [color="0.649 0.701 0.701"];
+#     "GAME INTRO" -> "Talk to Thongolith Researcher\nGet Readings from Demo Thongolith" [color="0.649 0.701 0.701"];
+#     "Talk to Heybenstance" -> "Kill Beasts, get Beasts Teeth\nSave Chickens" [color="0.649 0.701 0.701"];
+#     "Kill Beasts, get Beasts Teeth\nSave Chickens" -> "Give Heybenstance Beast Teeth" [color="0.649 0.701 0.701"];
+#     "Give Heybenstance Beast Teeth" -> "Kill Creeping Ooze\nGather Crystal Shard" [color="0.649 0.701 0.701"];
+#     "Give Heybenstance Beast Teeth" -> "Kill Demon Imps\nGather Demon Imp Horns" [color="0.649 0.701 0.701"];
+#     "Give Heybenstance Beast Teeth" -> "Gather Hair of the Pixies" [color="0.649 0.701 0.701"];
+#     "Kill Creeping Ooze\nGather Crystal Shard" -> "Give Heybenstance Hair of the Pixies, Crystal Shard, Tomato, Demon Imp Horns" [color="0.649 0.701 0.701"];
+#     "Kill Demon Imps\nGather Demon Imp Horns" -> "Give Heybenstance Hair of the Pixies, Crystal Shard, Tomato, Demon Imp Horns" [color="0.649 0.701 0.701"];
+#     "Gather Hair of the Pixies" -> "Give Heybenstance Hair of the Pixies, Crystal Shard, Tomato, Demon Imp Horns" [color="0.649 0.701 0.701"];
+
+#     "Pick up Anvil" -> "Use Anvil on Well" [color="0.649 0.701 0.701"];
+#     "Use Anvil on Well" -> "Go pick tomato" [color="0.649 0.701 0.701"];
+#     "Go pick tomato" -> "Give Heybenstance Hair of the Pixies, Crystal Shard, Tomato, Demon Imp Horns" [color="0.649 0.701 0.701"];
+# }
+
+# COLORS
+#     Metal: 556270 - 85,98,112                             0.332 0.382 .4375
+#     Turquesa: 4ECDC4|76BCAD - 78,205,196|118,188,173  
+#     Verde: C7F464 - 199,244,100
+#     Salmon: FF6B6B - 255,107,107
+#     Bordo: C44D58 - 196,77,88
+#     Crema: ECF6BB - 236,246,187
+
+# ACTIONS
+#     look
+#     pick
+#     combine
+#     interact
+#     go
+
+    
+---
+  events:
+    - name: game_intro
+      description: The game starts here
+      action: Null
+      location: garden_tree
+      dependency: Null
+
+    - name: look_at_spaceship
+      description: The boy stares at the spaceship and figures it could be a science fair project
+      action: look
+      location: barn
+      dependency: [game_intro]
+
+    - name: register_science_fair_attempt
+      description: Attempts to register to the school science fair.
+      action: interact
+      location: directors_office
+      dependency: [look_at_spaceship]
+  
+    - name: open_fountain_drain_valve
+      description: Use valve in the asylums control room 
+      action: interact
+      location: asylum
+      dependency: [game_intro]
+
+    - name: remove_clog_from_pipes
+      description:  Use solvent to clear the pipes from grease 
+      action: interact
+      location: asylum
+      dependency: [game_intro]
+
+    - name: empty_asylum_fountain
+      description:  Open fountain valve and remove clog from pipes 
+      action: combine
+      location: asylum
+      dependency: [open_fountain_drain_valve, remove_clog_from_pipes]
+  
+    - name: look_at_empty_fountain
+      description: Find and pick dentures by looking again inside water fountain
+      action: look
+      location: asylum
+      dependency: Null
+
+    - name: find_grandpa_dentures_in_fountain
+      description: Pick dentures caught by a bird on the asylum patio and left inside a little water fountain with dirty dark water
+      action: pick
+      location: asylum
+      dependency: [empty_asylum_fountain, look_at_empty_fountain]
+
+    - name: give_grandpa_dentures
+      description: Give grandpa the dentures caught from the asylum water fountain
+      action: interact
+      location: asylum
+      dependency: [find_grandpa_dentures_in_fountain]
+
+    - name: get_basement_door_unlock_code
+      description: Get unlock code for the basement door which has a keypad from Grandpa
+      action: interact
+      location: asylum
+      dependency: [give_grandpa_dentures, give_grandpa_moonshine]
+
+    - name: unlock_basement_door
+      description: Use unlock code on basement door
+      action: interact
+      location: house_corridor
+      dependency: [get_basement_door_unlock_code]
+
+    - name: access_basement
+      description: Open door basement
+      action: go
+      location: house_corridor
+      dependency: [unlock_basement_door]
+      
+    - name: non_perishable_donation
+      description: Picks a non_perishable food item
+      action: pick
+      location: basement
+      dependency: [access_basement]
+
+    - name: register_science_fair
+      description: Register to the school science fair. Requires a project definition and a non-perishable donation
+      action: interact
+      location: directors_office
+      dependency: [look_at_spaceship, project_definition, non_perishable_donation]
+    
+    - name: project_definition
+      description: 
+      action: combine
+      location: Null
+      dependency: [look_at_spaceship, find_spaceship_schematics, register_science_fair_attempt]
+      
+    - name: find_spaceship_schematics
+      description: Register to the school science fair. Requires a project definition and a non-perishable donation
+      action: interact
+      location: directors_office
+      dependency: [look_at_spaceship, project_definition, non_perishable_donation]
